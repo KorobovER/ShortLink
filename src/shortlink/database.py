@@ -43,8 +43,7 @@ class Database:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 short_code TEXT UNIQUE NOT NULL,
                 original_url TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                clicks INTEGER DEFAULT 0
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
         
@@ -72,6 +71,28 @@ class Database:
         conn = self.connect()
         conn.commit()
     
+    def add_link(self, short_code: str, original_url: str) -> None:
+        """Add new link to database."""
+        self.execute(
+            "INSERT INTO links (short_code, original_url) VALUES (?, ?)",
+            (short_code, original_url)
+        )
+        self.commit()
+    
+    def get_link_by_short_code(self, short_code: str) -> Optional[sqlite3.Row]:
+        """Get link by short code."""
+        return self.fetchone(
+            "SELECT * FROM links WHERE short_code = ?",
+            (short_code,)
+        )
+    
+    def get_link_by_original_url(self, original_url: str) -> Optional[sqlite3.Row]:
+        """Get link by original URL."""
+        return self.fetchone(
+            "SELECT * FROM links WHERE original_url = ?",
+            (original_url,)
+        )
+
     def __enter__(self) -> "Database":
         """Context manager entry."""
         return self
