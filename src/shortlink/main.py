@@ -40,12 +40,6 @@ app = FastAPI(
 )
 
 
-@app.on_event("startup")
-async def startup_event() -> None:
-    """Initialize database on startup."""
-    db.initialize()
-
-
 def generate_short_code(url: str, length: int = 6) -> str:
     """Генерирует короткий код с помощью хеширования URL."""
     hash_obj = hashlib.sha256(url.encode())
